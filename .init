@@ -1,0 +1,8 @@
+#!/bin/bash
+# Checker script is READABLE to the users.
+
+
+chmod 777 /challenge/sql_injection.py # r/w/e permissions for everyone
+chmod 4755 /challenge/checker # r/w/e for owner, r/e for others
+
+rm /challenge/.init
