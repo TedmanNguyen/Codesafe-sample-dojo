@@ -1,4 +1,5 @@
-# Homework 6
+# Homework 6 - Proof of Concept Challenge
+
 ## Scenario Description:
 
 
