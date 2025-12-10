@@ -1,0 +1,141 @@
+import unittest
+import io
+import contextlib
+import builtins
+import sql_injection_dojo as dojo
+
+
+class SqlInjectionDojoTests(unittest.TestCase):
+
+    def setUp(self):
+        self.conn = dojo.setup_database()
+
+    def tearDown(self):
+        self.conn.close()
+
+    # Simulate input() and capture stdout
+    def _run_with_inputs(self, func, inputs):
+        """
+        Replaces input() with a generator-driven fake version
+        and captures everything the function prints.
+        Returns: (captured_output_str, function_return_value)
+        """
+        original_input = builtins.input
+        it = iter(inputs)
+
+        def fake_input(prompt=""):
+            try:
+                return next(it)
+            except StopIteration:
+                raise AssertionError("Function requested more inputs than provided.")
+
+        builtins.input = fake_input
+
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            try:
+                result = func(self.conn)
+            finally:
+                builtins.input = original_input
+
+        return buf.getvalue(), result
+
+    # Database integrity tests
+    def test_database_has_21_users(self):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM users")
+        count = cursor.fetchone()[0]
+        self.assertEqual(count, 21)
+
+    def test_database_contains_specific_user(self):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT password FROM users WHERE username = 'emily'")
+        row = cursor.fetchone()
+        self.assertIsNotNone(row)
+        self.assertEqual(row[0], "overwatch_gurl")
+
+    # Vulnerable login tests
+    def test_vulnerable_login_detects_injection(self):
+        username = "' OR '1'='1"
+        password = "anything"
+
+        out, result = self._run_with_inputs(
+            dojo.vulnerable_login,
+            [username, password]
+        )
+
+        # vulnerable_login returns (success, injection_found)
+        self.assertIsInstance(result, tuple)
+        self.assertEqual(result, (True, True))
+
+    # Destructive attack test
+    def test_destructive_injection_removes_all_users(self):
+        username = "'; DELETE FROM users; --"
+        password = "anything"
+
+        out, _ = self._run_with_inputs(
+            dojo.destructive_attack,
+            [username, password]
+        )
+
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM users")
+        self.assertEqual(cursor.fetchone()[0], 0)
+
+    # Safe login tests
+    #
+    def test_safe_login_valid(self):
+        out, _ = self._run_with_inputs(
+            dojo.safe_login,
+            ["alice", "password123"]
+        )
+
+        self.assertIn("[System] You are logged in!", out)
+
+        # DB remains intact
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM users")
+        self.assertEqual(cursor.fetchone()[0], 21)
+
+    def test_safe_login_invalid(self):
+        out, _ = self._run_with_inputs(
+            dojo.safe_login,
+            ["alice", "WRONG"]
+        )
+
+        self.assertIn("[System] Log in failed.", out)
+
+        # DB remains intact
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM users")
+        self.assertEqual(cursor.fetchone()[0], 21)
+
+    def test_safe_login_blocks_boolean_injection(self):
+        out, _ = self._run_with_inputs(
+            dojo.safe_login,
+            ["' OR '1'='1", "anything"]
+        )
+
+        self.assertIn("[System] Log in failed.", out)
+
+        # DB intact
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM users")
+        self.assertEqual(cursor.fetchone()[0], 21)
+
+    def test_safe_login_prevents_delete_attack(self):
+        out, _ = self._run_with_inputs(
+            dojo.safe_login,
+            ["'; DELETE FROM users; --", "anything"]
+        )
+
+        self.assertIn("[System] Log in failed.", out)
+
+        # Table should not be emptied
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM users")
+        self.assertEqual(cursor.fetchone()[0], 21)
+
+
+if __name__ == "__main__":
+    unittest.main()
