@@ -1,36 +1,13 @@
 # Homework 6 - Proof of Concept Challenge
 
-## Scenario Description:
+## User Story:
 
-`DESCRIPTION.md` written by Stefan
-
-## Starter Code:
-
-`sql_injection_dojo.py` written by Tedman
-
-
-## Test Cases:
-
-`sql_injection_dojo_tests` written by Emily
-
-
-## Intended Solution:
-
-`intended_solution.py` written by Leon
-
-
-## User Story / Use Case:
-
-`[CompleteSQLInjectionChallenge]`  written by Theo
-
-
-User Story:
-
+Author: Theo
 ID: US-SEC-01
 
 As a student in Codesafe, I want to complete a SQL Injection challenge that shows how insecure login code can be exploited and how to fix it, So that I can learn what insecure code looks like in practice and understand how to write safer login logic.
 
-Source: HW6 Challenge Requirement
+Source: HW6 Challenge Requirement; Team Meeting Transcript (12/02); SQL Injection Starter Code
 
 Acceptance Criteria:
 - The challenge gives me starter code that intentionally contains an unsafe login function.
@@ -45,12 +22,9 @@ Acceptance Criteria:
 Rationale:
 This story helps students gain real experience with a common security flaw. Instead of just reading about SQL injection, they get to see it happen and learn how to stop it, which fits directly with Codesafe’s learning goals.
 
+## Use Case:
 
-Use Case Name
-CompleteSQLInjectionChallenge
-
-Author
-Theo
+`CompleteSQLInjectionChallenge` written by Theo
 
 Priority
 High
@@ -110,3 +84,21 @@ Exceptions
 
 Rationale
 This use case provides students with a practical exercise to understand SQL injection and implement secure coding practices in a realistic scenario, reinforcing Codesafe’s educational objectives.
+
+## Scenario Description:
+
+`DESCRIPTION.md` written by Stefan
+
+## Starter Code:
+
+`sql_injection_dojo.py` written by Tedman
+
+
+## Test Cases:
+
+`sql_injection_dojo_tests` written by Emily
+
+
+## Intended Solution:
+
+`intended_solution.py` written by Leon
