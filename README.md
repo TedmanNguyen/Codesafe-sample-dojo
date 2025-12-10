@@ -11,14 +11,14 @@
 
 ## Test Cases:
 
-'sql_injection_dojo_tests' written by Emily
+`sql_injection_dojo_tests` written by Emily
 
 
 ## Intended Solution:
 
-'intended_solution.py' written by Leon
+`intended_solution.py` written by Leon
 
 
 ## User Story / Use Case:
 
-'[file_name_here]'  written by Theo
+`[file_name_here]`  written by Theo
