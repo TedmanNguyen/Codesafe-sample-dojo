@@ -21,4 +21,4 @@
 
 ## User Story / Use Case:
 
-`[file_name_here]`  written by Theo
+`[CompleteSQLInjectionChallenge]`  written by Theo
