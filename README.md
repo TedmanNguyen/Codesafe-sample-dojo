@@ -30,7 +30,7 @@ ID: US-SEC-01
 
 As a student in Codesafe, I want to complete a SQL Injection challenge that shows how insecure login code can be exploited and how to fix it, So that I can learn what insecure code looks like in practice and understand how to write safer login logic.
 
-Source: HW6 Challenge Requirement; Team Meeting Transcript (12/02); SQL Injection Starter Code
+Source: HW6 Challenge Requirement
 
 Acceptance Criteria:
 - The challenge gives me starter code that intentionally contains an unsafe login function.
